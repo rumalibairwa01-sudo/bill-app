@@ -1,163 +1,220 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bill App</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bill App</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 15px;
-    }
-
-    .app {
-      max-width: 500px;
-      margin: auto;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    .box {
-      background: white;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 12px;
-    }
-
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 8px;
-      margin-bottom: 10px;
-      box-sizing: border-box;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    button {
-      background: #222;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    .total {
-      font-size: 20px;
-      font-weight: bold;
-    }
-  </style>
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+  margin:0;
+  padding:15px;
+}
+.app{
+  max-width:500px;
+  margin:auto;
+}
+h1{text-align:center}
+.box{
+  background:white;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:12px;
+}
+input,select,button{
+  width:100%;
+  box-sizing:border-box;
+  padding:12px;
+  margin:6px 0 10px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:16px;
+}
+button{
+  background:#222;
+  color:white;
+  border:0;
+}
+.item{
+  border:1px solid #ddd;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+.remove{
+  background:#c62828;
+}
+.total{
+  font-size:20px;
+  font-weight:bold;
+}
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <h1>🧾 Bill App</h1>
+<h1>🧾 Bill App</h1>
 
-  <div class="box">
+<div class="box">
 
-    <label>Language</label>
-    <select>
-      <option>Hi-English</option>
-      <option>English</option>
-      <option>हिंदी</option>
-    </select>
+<label>Language</label>
+<select id="language">
+<option>Hi-English</option>
+<option>English</option>
+<option>हिंदी</option>
+</select>
 
-    <label>Customer Name</label>
-    <input type="text" id="customerName" placeholder="Customer name">
+<label>Customer Name</label>
+<input id="customerName" placeholder="Customer name">
 
-    <label>Kapde ka naam</label>
-    <input type="text" id="clothName" placeholder="Jaise Blouse, Suit">
+<h3>Kapde</h3>
 
-    <label>Quantity</label>
-    <input type="number" id="quantity" placeholder="Kitne kapde">
+<div id="items"></div>
 
-    <label>Rate (₹)</label>
-    <input type="number" id="rate" placeholder="Ek kapde ka rate">
+<button onclick="addItem()">➕ Add Item</button>
 
-    <label>Paid Amount (₹)</label>
-    <input type="number" id="paid" placeholder="Kitna paisa mila">
+<label>Paid Amount (₹)</label>
+<input type="number" id="paid" placeholder="Kitna paisa mila">
 
-    <button onclick="makeBill()">Bill Banao</button>
+<button onclick="makeBill()">🧾 Bill Banao</button>
 
-  </div>
+</div>
 
-  <div class="box" id="bill" style="display:none;">
+<div class="box" id="bill" style="display:none">
 
-    <h2>🧾 BILL</h2>
+<h2>🧾 BILL</h2>
 
-    <p><b>Customer:</b> <span id="showName"></span></p>
-    <p><b>Kapda:</b> <span id="showCloth"></span></p>
-    <p><b>Quantity:</b> <span id="showQty"></span></p>
-    <p><b>Rate:</b> ₹<span id="showRate"></span></p>
+<p><b>Customer:</b> <span id="showName"></span></p>
 
-    <hr>
+<div id="showItems"></div>
 
-    <p class="total">Total: ₹<span id="showTotal"></span></p>
-    <p>Paid: ₹<span id="showPaid"></span></p>
-    <p>Pending: ₹<span id="showPending"></span></p>
+<hr>
 
-    <button onclick="sendWhatsApp()">📲 WhatsApp par bhejo</button>
+<p class="total">Total: ₹<span id="showTotal"></span></p>
+<p>Paid: ₹<span id="showPaid"></span></p>
+<p><b>Pending: ₹<span id="showPending"></span></b></p>
 
-  </div>
+<button onclick="sendWhatsApp()">📲 WhatsApp par bhejo</button>
+
+</div>
 
 </div>
 
 <script>
 
-function makeBill() {
+function addItem(){
 
-  let name = document.getElementById("customerName").value;
-  let cloth = document.getElementById("clothName").value;
-  let qty = Number(document.getElementById("quantity").value);
-  let rate = Number(document.getElementById("rate").value);
-  let paid = Number(document.getElementById("paid").value);
+  let div=document.createElement("div");
+  div.className="item";
 
-  let total = qty * rate;
-  let pending = total - paid;
+  div.innerHTML=`
+    <label>Kapde ka naam</label>
+    <input class="cloth" placeholder="Jaise Blouse, Kurta, Saree">
 
-  document.getElementById("showName").innerText = name;
-  document.getElementById("showCloth").innerText = cloth;
-  document.getElementById("showQty").innerText = qty;
-  document.getElementById("showRate").innerText = rate;
-  document.getElementById("showTotal").innerText = total;
-  document.getElementById("showPaid").innerText = paid;
-  document.getElementById("showPending").innerText = pending;
+    <label>Quantity</label>
+    <input class="qty" type="number" placeholder="Kitne">
 
-  document.getElementById("bill").style.display = "block";
+    <label>Rate (₹)</label>
+    <input class="rate" type="number" placeholder="Ek ka rate">
+
+    <button class="remove" onclick="this.parentElement.remove()">
+    ❌ Remove
+    </button>
+  `;
+
+  document.getElementById("items").appendChild(div);
 }
 
-function sendWhatsApp() {
+addItem();
 
-  let name = document.getElementById("customerName").value;
-  let cloth = document.getElementById("clothName").value;
-  let qty = document.getElementById("quantity").value;
-  let rate = document.getElementById("rate").value;
-  let paid = document.getElementById("paid").value;
+function getItems(){
 
-  let total = Number(qty) * Number(rate);
-  let pending = total - Number(paid);
+  let items=[];
 
-  let message =
-    "🧾 BILL%0A%0A" +
-    "Customer: " + name + "%0A" +
-    "Kapda: " + cloth + "%0A" +
-    "Quantity: " + qty + "%0A" +
-    "Rate: ₹" + rate + "%0A%0A" +
-    "Total: ₹" + total + "%0A" +
-    "Paid: ₹" + paid + "%0A" +
-    "Pending: ₹" + pending;
+  document.querySelectorAll(".item").forEach(item=>{
 
-  window.open("https://wa.me/?text=" + message, "_blank");
+    let cloth=item.querySelector(".cloth").value;
+    let qty=Number(item.querySelector(".qty").value);
+    let rate=Number(item.querySelector(".rate").value);
+
+    if(cloth && qty && rate){
+      items.push({
+        cloth:cloth,
+        qty:qty,
+        rate:rate,
+        amount:qty*rate
+      });
+    }
+
+  });
+
+  return items;
+}
+
+function makeBill(){
+
+  let name=document.getElementById("customerName").value;
+  let paid=Number(document.getElementById("paid").value)||0;
+
+  let items=getItems();
+
+  let total=items.reduce((sum,item)=>sum+item.amount,0);
+  let pending=total-paid;
+
+  document.getElementById("showName").innerText=name;
+
+  let html="";
+
+  items.forEach(item=>{
+    html+=`
+      <p>
+      <b>${item.cloth}</b> —
+      ${item.qty} × ₹${item.rate}
+      = ₹${item.amount}
+      </p>
+    `;
+  });
+
+  document.getElementById("showItems").innerHTML=html;
+  document.getElementById("showTotal").innerText=total;
+  document.getElementById("showPaid").innerText=paid;
+  document.getElementById("showPending").innerText=pending;
+
+  document.getElementById("bill").style.display="block";
+}
+
+function sendWhatsApp(){
+
+  let name=document.getElementById("customerName").value;
+  let paid=Number(document.getElementById("paid").value)||0;
+  let items=getItems();
+
+  let total=items.reduce((sum,item)=>sum+item.amount,0);
+  let pending=total-paid;
+
+  let message="🧾 BILL\n\n";
+  message+="Customer: "+name+"\n\n";
+
+  items.forEach(item=>{
+    message+=item.cloth+" — "+item.qty+" × ₹"+item.rate+
+    " = ₹"+item.amount+"\n";
+  });
+
+  message+="\nTotal: ₹"+total;
+  message+="\nPaid: ₹"+paid;
+  message+="\nPending: ₹"+pending;
+
+  window.open(
+    "https://wa.me/?text="+encodeURIComponent(message),
+    "_blank"
+  );
 }
 
 </script>
 
 </body>
-  </html>
+</html>
