@@ -1,1 +1,163 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bill App</title>
 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 15px;
+    }
+
+    .app {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .box {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      background: #222;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .total {
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <h1>🧾 Bill App</h1>
+
+  <div class="box">
+
+    <label>Language</label>
+    <select>
+      <option>Hi-English</option>
+      <option>English</option>
+      <option>हिंदी</option>
+    </select>
+
+    <label>Customer Name</label>
+    <input type="text" id="customerName" placeholder="Customer name">
+
+    <label>Kapde ka naam</label>
+    <input type="text" id="clothName" placeholder="Jaise Blouse, Suit">
+
+    <label>Quantity</label>
+    <input type="number" id="quantity" placeholder="Kitne kapde">
+
+    <label>Rate (₹)</label>
+    <input type="number" id="rate" placeholder="Ek kapde ka rate">
+
+    <label>Paid Amount (₹)</label>
+    <input type="number" id="paid" placeholder="Kitna paisa mila">
+
+    <button onclick="makeBill()">Bill Banao</button>
+
+  </div>
+
+  <div class="box" id="bill" style="display:none;">
+
+    <h2>🧾 BILL</h2>
+
+    <p><b>Customer:</b> <span id="showName"></span></p>
+    <p><b>Kapda:</b> <span id="showCloth"></span></p>
+    <p><b>Quantity:</b> <span id="showQty"></span></p>
+    <p><b>Rate:</b> ₹<span id="showRate"></span></p>
+
+    <hr>
+
+    <p class="total">Total: ₹<span id="showTotal"></span></p>
+    <p>Paid: ₹<span id="showPaid"></span></p>
+    <p>Pending: ₹<span id="showPending"></span></p>
+
+    <button onclick="sendWhatsApp()">📲 WhatsApp par bhejo</button>
+
+  </div>
+
+</div>
+
+<script>
+
+function makeBill() {
+
+  let name = document.getElementById("customerName").value;
+  let cloth = document.getElementById("clothName").value;
+  let qty = Number(document.getElementById("quantity").value);
+  let rate = Number(document.getElementById("rate").value);
+  let paid = Number(document.getElementById("paid").value);
+
+  let total = qty * rate;
+  let pending = total - paid;
+
+  document.getElementById("showName").innerText = name;
+  document.getElementById("showCloth").innerText = cloth;
+  document.getElementById("showQty").innerText = qty;
+  document.getElementById("showRate").innerText = rate;
+  document.getElementById("showTotal").innerText = total;
+  document.getElementById("showPaid").innerText = paid;
+  document.getElementById("showPending").innerText = pending;
+
+  document.getElementById("bill").style.display = "block";
+}
+
+function sendWhatsApp() {
+
+  let name = document.getElementById("customerName").value;
+  let cloth = document.getElementById("clothName").value;
+  let qty = document.getElementById("quantity").value;
+  let rate = document.getElementById("rate").value;
+  let paid = document.getElementById("paid").value;
+
+  let total = Number(qty) * Number(rate);
+  let pending = total - Number(paid);
+
+  let message =
+    "🧾 BILL%0A%0A" +
+    "Customer: " + name + "%0A" +
+    "Kapda: " + cloth + "%0A" +
+    "Quantity: " + qty + "%0A" +
+    "Rate: ₹" + rate + "%0A%0A" +
+    "Total: ₹" + total + "%0A" +
+    "Paid: ₹" + paid + "%0A" +
+    "Pending: ₹" + pending;
+
+  window.open("https://wa.me/?text=" + message, "_blank");
+}
+
+</script>
+
+</body>
+  </html>
