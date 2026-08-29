@@ -1,0 +1,9 @@
+{
+  "name": "Bill App",
+  "short_name": "Bill App",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#222222",
+  "description": "Simple bill making app"
+}
