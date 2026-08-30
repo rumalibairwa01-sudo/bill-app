@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="hi">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Bill App</title>
 
 <link rel="manifest" href="manifest.json">
 
 <style>
+
 body{
   font-family:Arial,sans-serif;
   background:#f5f5f5;
@@ -32,7 +37,9 @@ h1{
   border-radius:12px;
 }
 
-input,select,button{
+input,
+select,
+button{
   width:100%;
   box-sizing:border-box;
   padding:12px;
@@ -46,6 +53,7 @@ button{
   background:#222;
   color:white;
   border:0;
+  cursor:pointer;
 }
 
 .item{
@@ -67,12 +75,12 @@ button{
   background:#1976d2;
 }
 
-.back{
-  background:#555;
+.whatsapp{
+  background:#168c38;
 }
 
-.save{
-  background:#2e7d32;
+.back{
+  background:#555;
 }
 
 .total{
@@ -87,172 +95,287 @@ button{
   margin-bottom:10px;
   background:#fafafa;
 }
+
+.empty{
+  text-align:center;
+  padding:20px;
+  color:#666;
+}
+
 </style>
+
 </head>
+
 
 <body>
 
 <div class="app">
 
-<h1>🧾 Bill App</h1>
 
-<!-- HOME / NEW BILL -->
+<!-- ================= HOME PAGE ================= -->
 
 <div id="homePage">
+
+<h1>🧾 Bill App</h1>
+
 
 <div class="box">
 
 <label>Language</label>
 
 <select id="language">
+
 <option>Hi-English</option>
+
 <option>English</option>
+
 <option>हिंदी</option>
+
 </select>
+
 
 <label>Customer Name</label>
 
-<input id="customerName" placeholder="Customer name">
+<input
+id="customerName"
+placeholder="Customer name">
+
 
 <h3>Kapde</h3>
 
+
 <div id="items"></div>
 
-<button onclick="addItem()">➕ Add Item</button>
+
+<button onclick="addItem()">
+➕ Add Item
+</button>
+
 
 <label>Paid Amount (₹)</label>
 
-<input type="number" id="paid" placeholder="Kitna paisa mila">
+<input
+type="number"
+id="paid"
+placeholder="Kitna paisa mila">
 
-<button onclick="makeBill()">🧾 Bill Banao</button>
+
+<button onclick="makeBill()">
+🧾 Bill Banao
+</button>
 
 </div>
 
 
-<div class="box" id="bill" style="display:none">
+<!-- BILL -->
+
+<div
+class="box"
+id="bill"
+style="display:none">
+
 
 <h2>🧾 BILL</h2>
 
+
 <p>
+
 <b>Customer:</b>
+
 <span id="showName"></span>
+
 </p>
+
 
 <div id="showItems"></div>
 
+
 <hr>
 
+
 <p class="total">
+
 Total: ₹<span id="showTotal"></span>
+
 </p>
 
+
 <p>
+
 Paid: ₹<span id="showPaid"></span>
+
 </p>
+
 
 <p>
-<b>Pending: ₹<span id="showPending"></span></b>
+
+<b>
+Pending: ₹<span id="showPending"></span>
+</b>
+
 </p>
 
-<button class="save" onclick="saveBill()">
-💾 Save Bill
+
+<button
+class="whatsapp"
+onclick="sendWhatsApp()">
+
+📲 WhatsApp par bhejo
+
 </button>
 
-<button onclick="sendWhatsApp()">
-📲 WhatsApp par bhejo
-</button>
 
 </div>
+
+
+<!-- SAVED BILLS BUTTON -->
 
 <div class="box">
 
 <button onclick="showSavedBills()">
+
 📂 Saved Bills
+
 </button>
 
 </div>
 
+
 </div>
 
 
-<!-- SAVED BILLS PAGE -->
 
-<div id="savedPage" style="display:none">
+<!-- ================= SAVED BILLS PAGE ================= -->
+
+<div
+id="savedPage"
+style="display:none">
+
 
 <div class="box">
+
 
 <h2>📂 Saved Bills</h2>
 
+
 <div id="savedBillsList"></div>
 
-<button class="back" onclick="goHome()">
+
+<button
+class="back"
+onclick="goHome()">
+
 ⬅️ Back
+
 </button>
 
-</div>
 
 </div>
 
+</div>
 
-<!-- VIEW SAVED BILL -->
 
-<div id="viewPage" style="display:none">
+
+<!-- ================= VIEW BILL PAGE ================= -->
+
+<div
+id="viewPage"
+style="display:none">
+
 
 <div class="box">
 
+
 <h2>🧾 Saved Bill</h2>
+
 
 <div id="savedBillDetails"></div>
 
-<button onclick="sendSavedWhatsApp()">
+
+<button
+class="whatsapp"
+onclick="sendSavedWhatsApp()">
+
 📲 WhatsApp par bhejo
+
 </button>
 
-<button class="back" onclick="showSavedBills()">
+
+<button
+class="delete"
+onclick="deleteCurrentBill()">
+
+🗑️ Delete Bill
+
+</button>
+
+
+<button
+class="back"
+onclick="showSavedBills()">
+
 ⬅️ Back to Saved Bills
+
 </button>
 
-</div>
 
 </div>
 
 </div>
+
+
+</div>
+
 
 
 <script>
 
+
+/* ================= VARIABLES ================= */
+
 let currentBill = null;
+
 let currentSavedBill = null;
 
 
-/* ADD ITEM */
+
+/* ================= ADD ITEM ================= */
 
 function addItem(){
 
-  let div=document.createElement("div");
+  let div =
+  document.createElement("div");
 
-  div.className="item";
+  div.className = "item";
 
-  div.innerHTML=`
+
+  div.innerHTML = `
 
     <label>Kapde ka naam</label>
 
-    <input class="cloth"
+    <input
+    class="cloth"
     placeholder="Jaise Blouse, Kurta, Saree">
+
 
     <label>Quantity</label>
 
-    <input class="qty"
+    <input
+    class="qty"
     type="number"
     placeholder="Kitne">
 
+
     <label>Rate (₹)</label>
 
-    <input class="rate"
+    <input
+    class="rate"
     type="number"
     placeholder="Ek ka rate">
 
-    <button class="remove"
+
+    <button
+    class="remove"
     onclick="this.parentElement.remove()">
 
     ❌ Remove
@@ -261,31 +384,56 @@ function addItem(){
 
   `;
 
-  document.getElementById("items").appendChild(div);
+
+  document
+  .getElementById("items")
+  .appendChild(div);
 
 }
+
+
+/* FIRST ITEM */
 
 addItem();
 
 
-/* GET ITEMS */
+
+/* ================= GET ITEMS ================= */
 
 function getItems(){
 
-  let items=[];
+  let items = [];
 
-  document.querySelectorAll(".item").forEach(item=>{
 
-    let cloth=
-    item.querySelector(".cloth").value;
+  document
+  .querySelectorAll(".item")
+  .forEach(item => {
 
-    let qty=
-    Number(item.querySelector(".qty").value);
 
-    let rate=
-    Number(item.querySelector(".rate").value);
+    let cloth =
+    item
+    .querySelector(".cloth")
+    .value
+    .trim();
 
-    if(cloth && qty && rate){
+
+    let qty =
+    Number(
+      item
+      .querySelector(".qty")
+      .value
+    );
+
+
+    let rate =
+    Number(
+      item
+      .querySelector(".rate")
+      .value
+    );
+
+
+    if(cloth && qty > 0 && rate > 0){
 
       items.push({
 
@@ -295,7 +443,7 @@ function getItems(){
 
         rate:rate,
 
-        amount:qty*rate
+        amount:qty * rate
 
       });
 
@@ -303,49 +451,76 @@ function getItems(){
 
   });
 
+
   return items;
 
 }
 
 
-/* MAKE BILL */
+
+/* ================= MAKE BILL ================= */
 
 function makeBill(){
 
-  let name=
-  document.getElementById("customerName").value;
+  let name =
+  document
+  .getElementById("customerName")
+  .value
+  .trim();
 
-  let paid=
-  Number(document.getElementById("paid").value)||0;
 
-  let items=getItems();
+  let paid =
+  Number(
+    document
+    .getElementById("paid")
+    .value
+  ) || 0;
+
+
+  let items = getItems();
+
+
+  /* CHECK CUSTOMER */
 
   if(!name){
 
-    alert("Customer name डालो");
+    alert("⚠️ Customer name डालो");
 
     return;
 
   }
 
-  if(items.length===0){
 
-    alert("कम से कम एक item डालो");
+  /* CHECK ITEM */
+
+  if(items.length === 0){
+
+    alert("⚠️ कम से कम एक item डालो");
 
     return;
 
   }
 
-  let total=
+
+  /* TOTAL */
+
+  let total =
   items.reduce(
-    (sum,item)=>sum+item.amount,
+    (sum,item) =>
+    sum + item.amount,
     0
   );
 
-  let pending=total-paid;
+
+  /* PENDING */
+
+  let pending =
+  total - paid;
 
 
-  currentBill={
+  /* BILL OBJECT */
+
+  currentBill = {
 
     id:Date.now(),
 
@@ -359,28 +534,59 @@ function makeBill(){
 
     pending:pending,
 
-    date:new Date().toLocaleString()
+    date:new Date()
+    .toLocaleString()
 
   };
 
 
-  document.getElementById("showName").innerText=name;
+  /* ================= AUTO SAVE ================= */
+
+  let bills =
+  JSON.parse(
+    localStorage
+    .getItem("savedBills")
+  ) || [];
 
 
-  let html="";
+  bills.push(currentBill);
 
 
-  items.forEach(item=>{
+  localStorage.setItem(
 
-    html+=`
+    "savedBills",
+
+    JSON.stringify(bills)
+
+  );
+
+
+  /* ================= SHOW BILL ================= */
+
+  document
+  .getElementById("showName")
+  .innerText = name;
+
+
+  let html = "";
+
+
+  items.forEach(item => {
+
+    html += `
 
       <p>
 
-      <b>${item.cloth}</b> —
+      <b>${item.cloth}</b>
 
-      ${item.qty} × ₹${item.rate}
+      —
 
-      = ₹${item.amount}
+      ${item.qty}
+      ×
+      ₹${item.rate}
+
+      =
+      ₹${item.amount}
 
       </p>
 
@@ -389,130 +595,161 @@ function makeBill(){
   });
 
 
-  document.getElementById("showItems")
-  .innerHTML=html;
-
-  document.getElementById("showTotal")
-  .innerText=total;
-
-  document.getElementById("showPaid")
-  .innerText=paid;
-
-  document.getElementById("showPending")
-  .innerText=pending;
+  document
+  .getElementById("showItems")
+  .innerHTML = html;
 
 
-  document.getElementById("bill")
-  .style.display="block";
-
-}
-
-
-/* SAVE BILL */
-
-function saveBill(){
-
-  if(!currentBill){
-
-    alert("Pehle bill banao");
-
-    return;
-
-  }
+  document
+  .getElementById("showTotal")
+  .innerText = total;
 
 
-  let bills=
-  JSON.parse(
-    localStorage.getItem("savedBills")
-  ) || [];
+  document
+  .getElementById("showPaid")
+  .innerText = paid;
 
 
-  bills.push(currentBill);
+  document
+  .getElementById("showPending")
+  .innerText = pending;
 
 
-  localStorage.setItem(
-    "savedBills",
-    JSON.stringify(bills)
-  );
+  document
+  .getElementById("bill")
+  .style.display = "block";
 
 
-  alert("✅ Bill successfully save ho gaya!");
-
-
-  showSavedBills();
+  alert("✅ Bill automatically save ho gaya!");
 
 }
 
 
-/* SHOW SAVED BILLS */
+
+/* ================= SAVED BILLS ================= */
 
 function showSavedBills(){
 
-  document.getElementById("homePage")
-  .style.display="none";
-
-  document.getElementById("viewPage")
-  .style.display="none";
-
-  document.getElementById("savedPage")
-  .style.display="block";
+  document
+  .getElementById("homePage")
+  .style.display = "none";
 
 
-  let bills=
+  document
+  .getElementById("viewPage")
+  .style.display = "none";
+
+
+  document
+  .getElementById("savedPage")
+  .style.display = "block";
+
+
+  loadSavedBills();
+
+}
+
+
+
+/* ================= LOAD SAVED BILLS ================= */
+
+function loadSavedBills(){
+
+  let bills =
   JSON.parse(
-    localStorage.getItem("savedBills")
+    localStorage
+    .getItem("savedBills")
   ) || [];
 
 
-  let list=
-  document.getElementById("savedBillsList");
+  let list =
+  document
+  .getElementById("savedBillsList");
 
 
-  if(bills.length===0){
+  list.innerHTML = "";
 
-    list.innerHTML=
-    "<p>Abhi koi saved bill nahi hai.</p>";
+
+  /* NO BILL */
+
+  if(bills.length === 0){
+
+    list.innerHTML = `
+
+      <div class="empty">
+
+      📂 अभी कोई saved bill नहीं है।
+
+      </div>
+
+    `;
 
     return;
 
   }
 
 
-  list.innerHTML="";
+  /* NEWEST FIRST */
+
+  bills
+  .slice()
+  .reverse()
+  .forEach(bill => {
 
 
-  bills.reverse().forEach(bill=>{
-
-    let div=
-    document.createElement("div");
-
-    div.className="saved-bill";
+    let div =
+    document
+    .createElement("div");
 
 
-    div.innerHTML=`
+    div.className =
+    "saved-bill";
+
+
+    div.innerHTML = `
 
       <p>
+
       <b>👤 Customer:</b>
-      ${bill.name}
+
+      ${escapeHTML(bill.name)}
+
       </p>
 
-      <p>
-      💰 Total: ₹${bill.total}
-      </p>
 
       <p>
-      💵 Paid: ₹${bill.paid}
+
+      💰 Total:
+      ₹${bill.total}
+
       </p>
 
-      <p>
-      ⏳ Pending: ₹${bill.pending}
-      </p>
 
       <p>
+
+      💵 Paid:
+      ₹${bill.paid}
+
+      </p>
+
+
+      <p>
+
+      ⏳ Pending:
+      ₹${bill.pending}
+
+      </p>
+
+
+      <p>
+
       📅 ${bill.date}
+
       </p>
 
-      <button class="view"
+
+      <button
+      class="view"
       onclick="viewBill(${bill.id})">
 
       👁️ View Bill
@@ -520,7 +757,8 @@ function showSavedBills(){
       </button>
 
 
-      <button class="delete"
+      <button
+      class="delete"
       onclick="deleteBill(${bill.id})">
 
       🗑️ Delete
@@ -537,47 +775,67 @@ function showSavedBills(){
 }
 
 
-/* VIEW BILL */
+
+/* ================= VIEW BILL ================= */
 
 function viewBill(id){
 
-  let bills=
+  let bills =
   JSON.parse(
-    localStorage.getItem("savedBills")
+    localStorage
+    .getItem("savedBills")
   ) || [];
 
 
-  let bill=
-  bills.find(b=>b.id===id);
+  let bill =
+  bills.find(
+    b => b.id === id
+  );
 
 
-  if(!bill) return;
+  if(!bill){
+
+    alert("Bill नहीं मिला");
+
+    return;
+
+  }
 
 
-  currentSavedBill=bill;
+  currentSavedBill = bill;
 
 
-  let html=`
+  let html = `
 
     <p>
-    <b>Customer:</b>
-    ${bill.name}
+
+    <b>👤 Customer:</b>
+
+    ${escapeHTML(bill.name)}
+
     </p>
 
   `;
 
 
-  bill.items.forEach(item=>{
+  bill.items.forEach(item => {
 
-    html+=`
+    html += `
 
       <p>
 
-      <b>${item.cloth}</b> —
+      <b>
+      ${escapeHTML(item.cloth)}
+      </b>
 
-      ${item.qty} × ₹${item.rate}
+      —
 
-      = ₹${item.amount}
+      ${item.qty}
+      ×
+      ₹${item.rate}
+
+      =
+      ₹${item.amount}
 
       </p>
 
@@ -586,77 +844,111 @@ function viewBill(id){
   });
 
 
-  html+=`
+  html += `
 
     <hr>
 
+
     <p class="total">
-    Total: ₹${bill.total}
+
+    Total:
+    ₹${bill.total}
+
     </p>
 
-    <p>
-    Paid: ₹${bill.paid}
-    </p>
 
     <p>
-    <b>Pending: ₹${bill.pending}</b>
+
+    Paid:
+    ₹${bill.paid}
+
     </p>
 
+
     <p>
+
+    <b>
+
+    Pending:
+    ₹${bill.pending}
+
+    </b>
+
+    </p>
+
+
+    <p>
+
     📅 ${bill.date}
+
     </p>
 
   `;
 
 
-  document.getElementById(
-    "savedBillDetails"
-  ).innerHTML=html;
+  document
+  .getElementById("savedBillDetails")
+  .innerHTML = html;
 
 
-  document.getElementById("homePage")
-  .style.display="none";
+  document
+  .getElementById("homePage")
+  .style.display = "none";
 
-  document.getElementById("savedPage")
-  .style.display="none";
 
-  document.getElementById("viewPage")
-  .style.display="block";
+  document
+  .getElementById("savedPage")
+  .style.display = "none";
+
+
+  document
+  .getElementById("viewPage")
+  .style.display = "block";
 
 }
 
 
-/* DELETE BILL */
+
+/* ================= DELETE BILL ================= */
 
 function deleteBill(id){
 
-  let confirmDelete=
-  confirm("⚠️ Kya tum ye bill delete karna chahte ho?");
+  let answer =
+  confirm(
+    "⚠️ Kya tum ye bill delete karna chahte ho?"
+  );
 
 
-  if(!confirmDelete){
+  if(!answer){
 
     return;
 
   }
 
 
-  let bills=
+  let bills =
   JSON.parse(
-    localStorage.getItem("savedBills")
+    localStorage
+    .getItem("savedBills")
   ) || [];
 
 
-  bills=
+  bills =
   bills.filter(
-    bill=>bill.id!==id
+    bill => bill.id !== id
   );
 
 
   localStorage.setItem(
+
     "savedBills",
+
     JSON.stringify(bills)
+
   );
+
+
+  currentSavedBill = null;
 
 
   alert("🗑️ Bill delete ho gaya");
@@ -667,23 +959,49 @@ function deleteBill(id){
 }
 
 
-/* HOME */
 
-function goHome(){
+/* ================= DELETE CURRENT BILL ================= */
 
-  document.getElementById("savedPage")
-  .style.display="none";
+function deleteCurrentBill(){
 
-  document.getElementById("viewPage")
-  .style.display="none";
+  if(!currentSavedBill){
 
-  document.getElementById("homePage")
-  .style.display="block";
+    return;
+
+  }
+
+
+  deleteBill(
+    currentSavedBill.id
+  );
 
 }
 
 
-/* WHATSAPP NEW BILL */
+
+/* ================= HOME ================= */
+
+function goHome(){
+
+  document
+  .getElementById("savedPage")
+  .style.display = "none";
+
+
+  document
+  .getElementById("viewPage")
+  .style.display = "none";
+
+
+  document
+  .getElementById("homePage")
+  .style.display = "block";
+
+}
+
+
+
+/* ================= WHATSAPP NEW BILL ================= */
 
 function sendWhatsApp(){
 
@@ -696,105 +1014,82 @@ function sendWhatsApp(){
   }
 
 
-  let bill=currentBill;
-
-
-  let message=
-  "🧾 BILL\n\n";
-
-
-  message+=
-  "Customer: "+bill.name+"\n\n";
-
-
-  bill.items.forEach(item=>{
-
-    message+=
-    item.cloth+
-    " — "+
-    item.qty+
-    " × ₹"+
-    item.rate+
-    " = ₹"+
-    item.amount+
-    "\n";
-
-  });
-
-
-  message+=
-  "\nTotal: ₹"+bill.total;
-
-  message+=
-  "\nPaid: ₹"+bill.paid;
-
-  message+=
-  "\nPending: ₹"+bill.pending;
-
-
-  window.open(
-
-    "https://wa.me/?text="+
-    encodeURIComponent(message),
-
-    "_blank"
-
-  );
+  sendBillToWhatsApp(currentBill);
 
 }
 
 
-/* WHATSAPP SAVED BILL */
+
+/* ================= WHATSAPP SAVED BILL ================= */
 
 function sendSavedWhatsApp(){
 
   if(!currentSavedBill){
+
+    alert("Bill नहीं मिला");
 
     return;
 
   }
 
 
-  let bill=currentSavedBill;
+  sendBillToWhatsApp(
+    currentSavedBill
+  );
+
+}
 
 
-  let message=
+
+/* ================= WHATSAPP FUNCTION ================= */
+
+function sendBillToWhatsApp(bill){
+
+  let message =
   "🧾 BILL\n\n";
 
 
-  message+=
-  "Customer: "+bill.name+"\n\n";
+  message +=
+  "Customer: "
+  + bill.name
+  + "\n\n";
 
 
-  bill.items.forEach(item=>{
+  bill.items.forEach(item => {
 
-    message+=
-    item.cloth+
-    " — "+
-    item.qty+
-    " × ₹"+
-    item.rate+
-    " = ₹"+
-    item.amount+
-    "\n";
+    message +=
+
+    item.cloth
+    + " — "
+    + item.qty
+    + " × ₹"
+    + item.rate
+    + " = ₹"
+    + item.amount
+    + "\n";
 
   });
 
 
-  message+=
-  "\nTotal: ₹"+bill.total;
+  message +=
+  "\nTotal: ₹"
+  + bill.total;
 
-  message+=
-  "\nPaid: ₹"+bill.paid;
 
-  message+=
-  "\nPending: ₹"+bill.pending;
+  message +=
+  "\nPaid: ₹"
+  + bill.paid;
+
+
+  message +=
+  "\nPending: ₹"
+  + bill.pending;
 
 
   window.open(
 
-    "https://wa.me/?text="+
-    encodeURIComponent(message),
+    "https://wa.me/?text="
+    + encodeURIComponent(message),
 
     "_blank"
 
@@ -802,18 +1097,49 @@ function sendSavedWhatsApp(){
 
 }
 
+
+
+/* ================= SECURITY ================= */
+
+function escapeHTML(text){
+
+  return String(text)
+
+  .replace(/&/g,"&amp;")
+
+  .replace(/</g,"&lt;")
+
+  .replace(/>/g,"&gt;")
+
+  .replace(/"/g,"&quot;")
+
+  .replace(/'/g,"&#039;");
+
+}
+
+
 </script>
+
 
 
 <script>
 
-if("serviceWorker" in navigator){
+/* SERVICE WORKER */
 
-  navigator.serviceWorker.register("./sw.js");
+if(
+  "serviceWorker"
+  in navigator
+){
+
+  navigator
+  .serviceWorker
+  .register("./sw.js");
 
 }
 
 </script>
 
+
 </body>
-</html>
+
+  </html>
