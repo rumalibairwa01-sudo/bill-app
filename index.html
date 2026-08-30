@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Bill App</title>
-  <link rel="manifest" href="manifest.json">
+
+<link rel="manifest" href="manifest.json">
 
 <style>
 body{
@@ -13,17 +15,23 @@ body{
   margin:0;
   padding:15px;
 }
+
 .app{
   max-width:500px;
   margin:auto;
 }
-h1{text-align:center}
+
+h1{
+  text-align:center;
+}
+
 .box{
   background:white;
   padding:15px;
   margin-bottom:15px;
   border-radius:12px;
 }
+
 input,select,button{
   width:100%;
   box-sizing:border-box;
@@ -33,23 +41,51 @@ input,select,button{
   border-radius:8px;
   font-size:16px;
 }
+
 button{
   background:#222;
   color:white;
   border:0;
 }
+
 .item{
   border:1px solid #ddd;
   padding:10px;
   border-radius:10px;
   margin-bottom:10px;
 }
+
 .remove{
   background:#c62828;
 }
+
+.delete{
+  background:#c62828;
+}
+
+.view{
+  background:#1976d2;
+}
+
+.back{
+  background:#555;
+}
+
+.save{
+  background:#2e7d32;
+}
+
 .total{
   font-size:20px;
   font-weight:bold;
+}
+
+.saved-bill{
+  border:1px solid #ddd;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  background:#fafafa;
 }
 </style>
 </head>
@@ -60,9 +96,14 @@ button{
 
 <h1>🧾 Bill App</h1>
 
+<!-- HOME / NEW BILL -->
+
+<div id="homePage">
+
 <div class="box">
 
 <label>Language</label>
+
 <select id="language">
 <option>Hi-English</option>
 <option>English</option>
@@ -70,6 +111,7 @@ button{
 </select>
 
 <label>Customer Name</label>
+
 <input id="customerName" placeholder="Customer name">
 
 <h3>Kapde</h3>
@@ -79,58 +121,154 @@ button{
 <button onclick="addItem()">➕ Add Item</button>
 
 <label>Paid Amount (₹)</label>
+
 <input type="number" id="paid" placeholder="Kitna paisa mila">
 
 <button onclick="makeBill()">🧾 Bill Banao</button>
 
 </div>
 
+
 <div class="box" id="bill" style="display:none">
 
 <h2>🧾 BILL</h2>
 
-<p><b>Customer:</b> <span id="showName"></span></p>
+<p>
+<b>Customer:</b>
+<span id="showName"></span>
+</p>
 
 <div id="showItems"></div>
 
 <hr>
 
-<p class="total">Total: ₹<span id="showTotal"></span></p>
-<p>Paid: ₹<span id="showPaid"></span></p>
-<p><b>Pending: ₹<span id="showPending"></span></b></p>
+<p class="total">
+Total: ₹<span id="showTotal"></span>
+</p>
 
-<button onclick="sendWhatsApp()">📲 WhatsApp par bhejo</button>
+<p>
+Paid: ₹<span id="showPaid"></span>
+</p>
+
+<p>
+<b>Pending: ₹<span id="showPending"></span></b>
+</p>
+
+<button class="save" onclick="saveBill()">
+💾 Save Bill
+</button>
+
+<button onclick="sendWhatsApp()">
+📲 WhatsApp par bhejo
+</button>
+
+</div>
+
+<div class="box">
+
+<button onclick="showSavedBills()">
+📂 Saved Bills
+</button>
 
 </div>
 
 </div>
+
+
+<!-- SAVED BILLS PAGE -->
+
+<div id="savedPage" style="display:none">
+
+<div class="box">
+
+<h2>📂 Saved Bills</h2>
+
+<div id="savedBillsList"></div>
+
+<button class="back" onclick="goHome()">
+⬅️ Back
+</button>
+
+</div>
+
+</div>
+
+
+<!-- VIEW SAVED BILL -->
+
+<div id="viewPage" style="display:none">
+
+<div class="box">
+
+<h2>🧾 Saved Bill</h2>
+
+<div id="savedBillDetails"></div>
+
+<button onclick="sendSavedWhatsApp()">
+📲 WhatsApp par bhejo
+</button>
+
+<button class="back" onclick="showSavedBills()">
+⬅️ Back to Saved Bills
+</button>
+
+</div>
+
+</div>
+
+</div>
+
 
 <script>
+
+let currentBill = null;
+let currentSavedBill = null;
+
+
+/* ADD ITEM */
 
 function addItem(){
 
   let div=document.createElement("div");
+
   div.className="item";
 
   div.innerHTML=`
+
     <label>Kapde ka naam</label>
-    <input class="cloth" placeholder="Jaise Blouse, Kurta, Saree">
+
+    <input class="cloth"
+    placeholder="Jaise Blouse, Kurta, Saree">
 
     <label>Quantity</label>
-    <input class="qty" type="number" placeholder="Kitne">
+
+    <input class="qty"
+    type="number"
+    placeholder="Kitne">
 
     <label>Rate (₹)</label>
-    <input class="rate" type="number" placeholder="Ek ka rate">
 
-    <button class="remove" onclick="this.parentElement.remove()">
+    <input class="rate"
+    type="number"
+    placeholder="Ek ka rate">
+
+    <button class="remove"
+    onclick="this.parentElement.remove()">
+
     ❌ Remove
+
     </button>
+
   `;
 
   document.getElementById("items").appendChild(div);
+
 }
 
 addItem();
+
+
+/* GET ITEMS */
 
 function getItems(){
 
@@ -138,85 +276,544 @@ function getItems(){
 
   document.querySelectorAll(".item").forEach(item=>{
 
-    let cloth=item.querySelector(".cloth").value;
-    let qty=Number(item.querySelector(".qty").value);
-    let rate=Number(item.querySelector(".rate").value);
+    let cloth=
+    item.querySelector(".cloth").value;
+
+    let qty=
+    Number(item.querySelector(".qty").value);
+
+    let rate=
+    Number(item.querySelector(".rate").value);
 
     if(cloth && qty && rate){
+
       items.push({
+
         cloth:cloth,
+
         qty:qty,
+
         rate:rate,
+
         amount:qty*rate
+
       });
+
     }
 
   });
 
   return items;
+
 }
+
+
+/* MAKE BILL */
 
 function makeBill(){
 
-  let name=document.getElementById("customerName").value;
-  let paid=Number(document.getElementById("paid").value)||0;
+  let name=
+  document.getElementById("customerName").value;
+
+  let paid=
+  Number(document.getElementById("paid").value)||0;
 
   let items=getItems();
 
-  let total=items.reduce((sum,item)=>sum+item.amount,0);
+  if(!name){
+
+    alert("Customer name डालो");
+
+    return;
+
+  }
+
+  if(items.length===0){
+
+    alert("कम से कम एक item डालो");
+
+    return;
+
+  }
+
+  let total=
+  items.reduce(
+    (sum,item)=>sum+item.amount,
+    0
+  );
+
   let pending=total-paid;
+
+
+  currentBill={
+
+    id:Date.now(),
+
+    name:name,
+
+    items:items,
+
+    total:total,
+
+    paid:paid,
+
+    pending:pending,
+
+    date:new Date().toLocaleString()
+
+  };
+
 
   document.getElementById("showName").innerText=name;
 
+
   let html="";
 
+
   items.forEach(item=>{
+
     html+=`
+
       <p>
+
       <b>${item.cloth}</b> —
+
       ${item.qty} × ₹${item.rate}
+
       = ₹${item.amount}
+
       </p>
+
     `;
+
   });
 
-  document.getElementById("showItems").innerHTML=html;
-  document.getElementById("showTotal").innerText=total;
-  document.getElementById("showPaid").innerText=paid;
-  document.getElementById("showPending").innerText=pending;
 
-  document.getElementById("bill").style.display="block";
+  document.getElementById("showItems")
+  .innerHTML=html;
+
+  document.getElementById("showTotal")
+  .innerText=total;
+
+  document.getElementById("showPaid")
+  .innerText=paid;
+
+  document.getElementById("showPending")
+  .innerText=pending;
+
+
+  document.getElementById("bill")
+  .style.display="block";
+
 }
+
+
+/* SAVE BILL */
+
+function saveBill(){
+
+  if(!currentBill){
+
+    alert("Pehle bill banao");
+
+    return;
+
+  }
+
+
+  let bills=
+  JSON.parse(
+    localStorage.getItem("savedBills")
+  ) || [];
+
+
+  bills.push(currentBill);
+
+
+  localStorage.setItem(
+    "savedBills",
+    JSON.stringify(bills)
+  );
+
+
+  alert("✅ Bill successfully save ho gaya!");
+
+
+  showSavedBills();
+
+}
+
+
+/* SHOW SAVED BILLS */
+
+function showSavedBills(){
+
+  document.getElementById("homePage")
+  .style.display="none";
+
+  document.getElementById("viewPage")
+  .style.display="none";
+
+  document.getElementById("savedPage")
+  .style.display="block";
+
+
+  let bills=
+  JSON.parse(
+    localStorage.getItem("savedBills")
+  ) || [];
+
+
+  let list=
+  document.getElementById("savedBillsList");
+
+
+  if(bills.length===0){
+
+    list.innerHTML=
+    "<p>Abhi koi saved bill nahi hai.</p>";
+
+    return;
+
+  }
+
+
+  list.innerHTML="";
+
+
+  bills.reverse().forEach(bill=>{
+
+    let div=
+    document.createElement("div");
+
+    div.className="saved-bill";
+
+
+    div.innerHTML=`
+
+      <p>
+      <b>👤 Customer:</b>
+      ${bill.name}
+      </p>
+
+      <p>
+      💰 Total: ₹${bill.total}
+      </p>
+
+      <p>
+      💵 Paid: ₹${bill.paid}
+      </p>
+
+      <p>
+      ⏳ Pending: ₹${bill.pending}
+      </p>
+
+      <p>
+      📅 ${bill.date}
+      </p>
+
+      <button class="view"
+      onclick="viewBill(${bill.id})">
+
+      👁️ View Bill
+
+      </button>
+
+
+      <button class="delete"
+      onclick="deleteBill(${bill.id})">
+
+      🗑️ Delete
+
+      </button>
+
+    `;
+
+
+    list.appendChild(div);
+
+  });
+
+}
+
+
+/* VIEW BILL */
+
+function viewBill(id){
+
+  let bills=
+  JSON.parse(
+    localStorage.getItem("savedBills")
+  ) || [];
+
+
+  let bill=
+  bills.find(b=>b.id===id);
+
+
+  if(!bill) return;
+
+
+  currentSavedBill=bill;
+
+
+  let html=`
+
+    <p>
+    <b>Customer:</b>
+    ${bill.name}
+    </p>
+
+  `;
+
+
+  bill.items.forEach(item=>{
+
+    html+=`
+
+      <p>
+
+      <b>${item.cloth}</b> —
+
+      ${item.qty} × ₹${item.rate}
+
+      = ₹${item.amount}
+
+      </p>
+
+    `;
+
+  });
+
+
+  html+=`
+
+    <hr>
+
+    <p class="total">
+    Total: ₹${bill.total}
+    </p>
+
+    <p>
+    Paid: ₹${bill.paid}
+    </p>
+
+    <p>
+    <b>Pending: ₹${bill.pending}</b>
+    </p>
+
+    <p>
+    📅 ${bill.date}
+    </p>
+
+  `;
+
+
+  document.getElementById(
+    "savedBillDetails"
+  ).innerHTML=html;
+
+
+  document.getElementById("homePage")
+  .style.display="none";
+
+  document.getElementById("savedPage")
+  .style.display="none";
+
+  document.getElementById("viewPage")
+  .style.display="block";
+
+}
+
+
+/* DELETE BILL */
+
+function deleteBill(id){
+
+  let confirmDelete=
+  confirm("⚠️ Kya tum ye bill delete karna chahte ho?");
+
+
+  if(!confirmDelete){
+
+    return;
+
+  }
+
+
+  let bills=
+  JSON.parse(
+    localStorage.getItem("savedBills")
+  ) || [];
+
+
+  bills=
+  bills.filter(
+    bill=>bill.id!==id
+  );
+
+
+  localStorage.setItem(
+    "savedBills",
+    JSON.stringify(bills)
+  );
+
+
+  alert("🗑️ Bill delete ho gaya");
+
+
+  showSavedBills();
+
+}
+
+
+/* HOME */
+
+function goHome(){
+
+  document.getElementById("savedPage")
+  .style.display="none";
+
+  document.getElementById("viewPage")
+  .style.display="none";
+
+  document.getElementById("homePage")
+  .style.display="block";
+
+}
+
+
+/* WHATSAPP NEW BILL */
 
 function sendWhatsApp(){
 
-  let name=document.getElementById("customerName").value;
-  let paid=Number(document.getElementById("paid").value)||0;
-  let items=getItems();
+  if(!currentBill){
 
-  let total=items.reduce((sum,item)=>sum+item.amount,0);
-  let pending=total-paid;
+    alert("Pehle bill banao");
 
-  let message="🧾 BILL\n\n";
-  message+="Customer: "+name+"\n\n";
+    return;
 
-  items.forEach(item=>{
-    message+=item.cloth+" — "+item.qty+" × ₹"+item.rate+
-    " = ₹"+item.amount+"\n";
+  }
+
+
+  let bill=currentBill;
+
+
+  let message=
+  "🧾 BILL\n\n";
+
+
+  message+=
+  "Customer: "+bill.name+"\n\n";
+
+
+  bill.items.forEach(item=>{
+
+    message+=
+    item.cloth+
+    " — "+
+    item.qty+
+    " × ₹"+
+    item.rate+
+    " = ₹"+
+    item.amount+
+    "\n";
+
   });
 
-  message+="\nTotal: ₹"+total;
-  message+="\nPaid: ₹"+paid;
-  message+="\nPending: ₹"+pending;
+
+  message+=
+  "\nTotal: ₹"+bill.total;
+
+  message+=
+  "\nPaid: ₹"+bill.paid;
+
+  message+=
+  "\nPending: ₹"+bill.pending;
+
 
   window.open(
-    "https://wa.me/?text="+encodeURIComponent(message),
+
+    "https://wa.me/?text="+
+    encodeURIComponent(message),
+
     "_blank"
+
   );
+
+}
+
+
+/* WHATSAPP SAVED BILL */
+
+function sendSavedWhatsApp(){
+
+  if(!currentSavedBill){
+
+    return;
+
+  }
+
+
+  let bill=currentSavedBill;
+
+
+  let message=
+  "🧾 BILL\n\n";
+
+
+  message+=
+  "Customer: "+bill.name+"\n\n";
+
+
+  bill.items.forEach(item=>{
+
+    message+=
+    item.cloth+
+    " — "+
+    item.qty+
+    " × ₹"+
+    item.rate+
+    " = ₹"+
+    item.amount+
+    "\n";
+
+  });
+
+
+  message+=
+  "\nTotal: ₹"+bill.total;
+
+  message+=
+  "\nPaid: ₹"+bill.paid;
+
+  message+=
+  "\nPending: ₹"+bill.pending;
+
+
+  window.open(
+
+    "https://wa.me/?text="+
+    encodeURIComponent(message),
+
+    "_blank"
+
+  );
+
 }
 
 </script>
-  <script>
-if ("serviceWorker" in navigator) {
+
+
+<script>
+
+if("serviceWorker" in navigator){
+
   navigator.serviceWorker.register("./sw.js");
-    
+
+}
+
+</script>
+
+</body>
+</html>
